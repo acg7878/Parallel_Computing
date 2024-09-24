@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
   int IntMax = std::numeric_limits<int>::max();
   std::atomic<double> pi(0.0);
   int num_thread = std::thread::hardware_concurrency();
+  //std::cout << num_thread << std::endl;
   std::vector<std::thread> threads;
   int size = IntMax / num_thread;
 
@@ -32,6 +33,7 @@ int main(int argc, char *argv[]) {
     int start = i * size;
     int end = (i == num_thread - 1) ? IntMax : start + size;
     threads.emplace_back(computer_pi_part, start, end, std::ref(pi));
+    //emplace_back直接构造对象，第一个参数为函数，其余为函数的参数
   }
   for (auto &t : threads) {
     t.join();
