@@ -22,7 +22,8 @@ void task_sub(int start, int end, std::atomic<double> &pi_part) {
 int main(int argc, char *argv[]) {
   std::atomic<double> pi(0.0);
   int num_threads = 2;
-  int IntMax = std::numeric_limits<int>::max();
+  int IntMax = 2000000000;
+  //这里使用std::numeric_limits<unsigned int>::max()会无响应，原因未知
   std::vector<std::thread> threads;
   threads.emplace_back(task_add,0,IntMax,std::ref(pi));
   threads.emplace_back(task_sub,1,IntMax,std::ref(pi));
