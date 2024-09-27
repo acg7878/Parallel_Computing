@@ -1,5 +1,6 @@
 #include <atomic>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <limits>
 #include <thread>
@@ -33,6 +34,6 @@ int main(int argc, char *argv[]) {
     t.join();
   }
   double PI = pi * 4.0;
-  std::cout << PI << std::endl;
+  std::cout << std::setprecision(15) << PI << std::endl;
   return 0;
 }
