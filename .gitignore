@@ -3,3 +3,5 @@ bin/
 output/
 cmake-build-debug
 build
+.idea
+
