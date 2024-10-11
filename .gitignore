@@ -4,4 +4,4 @@ output/
 cmake-build-debug
 build
 .idea
-
+output.txt

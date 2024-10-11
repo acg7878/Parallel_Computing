@@ -13,5 +13,5 @@ bool compareBoards(const std::vector<std::vector<int>> &board1,
 
 void setCurrentPathToProjectRoot();
 void printCurrentPath();
-
+void saveBoardToFile(const std::vector<std::vector<int>> &board);
 #endif // UTIL_H
