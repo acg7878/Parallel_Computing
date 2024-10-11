@@ -13,4 +13,7 @@ bool loadBoardFromFile(const std::string& filename,
 bool compareBoards(const std::vector<std::vector<int>>& board1,
                    const std::vector<std::vector<int>>& board2);
 
+void setCurrentPathToProjectRoot();
+void printCurrentPath();
+
 #endif  // UTIL_H
