@@ -1,24 +1,30 @@
 #include "game_of_life.h"
 
 #include <iostream>
-#include <random>
 
-GameOfLife::GameOfLife (int r, int c)
+#include "util.h"
+
+GameOfLife::GameOfLife (int r, int c, int n)
     : rows (r),
       cols (c),
+      generation (n),
       grid (r, std::vector<int> (c, 0)),
       newGrid (r, std::vector<int> (c, 0)) {}
 
-void GameOfLife::initialize () {
-    std::random_device rd;
-    std::mt19937 gen (rd ());
-    std::uniform_int_distribution<> dis (0, 1);
-
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            grid[i][j] = dis (gen);  // 随机生成0或1
-        }
+bool GameOfLife::initialize () {
+    setCurrentPathToProjectRoot ();
+    // printCurrentPath ();
+    int fileIndex;
+    std::cout << "请输入文件序号: ";
+    std::cin >> fileIndex;
+    // 选择数据、输入数据
+    std::string initFilename =
+        "test_data/" + std::to_string (fileIndex) + ".init.txt";
+    if (!loadBoardFromFile (initFilename, grid, rows, cols)) {
+        // std::cerr << "无法打开文件 " << std::endl;
+        return 1;
     }
+    return 0;
 }
 
 void GameOfLife::printGrid () {

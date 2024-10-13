@@ -6,5 +6,5 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the executable
-add_executable(GameOfLife main.cpp game_of_life.cpp my_thread.cpp)
+add_executable(GameOfLife main.cpp game_of_life.cpp my_thread.cpp util.cpp)
 

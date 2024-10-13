@@ -7,11 +7,12 @@
 #include "game_of_life.h"
 
 class ThreadManager {
-   public:
+public:
     ThreadManager (GameOfLife& game, int numThreads);
 
     void run (int generations);  // 运行多个代数
-   private:
+
+private:
     void worker (int startRow, int endRow, int threadId);  // 线程工作函数
 
     GameOfLife& game;

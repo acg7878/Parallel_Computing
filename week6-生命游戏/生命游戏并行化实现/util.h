@@ -7,7 +7,7 @@
 // 声明读取文件的函数
 bool loadBoardFromFile (const std::string &filename,
                         std::vector<std::vector<int>> &board, int &rows,
-                        int &cols, int &generation);
+                        int &cols);
 bool compareBoards (const std::vector<std::vector<int>> &board1,
                     const std::vector<std::vector<int>> &board2);
 

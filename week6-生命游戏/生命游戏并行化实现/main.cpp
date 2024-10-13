@@ -5,19 +5,24 @@
 #include "my_thread.h"
 
 int main () {
-    int rows, cols;
+    int rows, cols, generation;
     int numThreads = std::thread::hardware_concurrency ();
-    std::cin >> rows >> cols;
-    GameOfLife game (rows, cols);
-    game.initialize ();
-    std::cout << "Initial Generation: " << std::endl;
-    game.printGrid ();
+    std::cout << "输入行数、列数、迭代数：";
+    std::cin >> rows >> cols >> generation;
+    GameOfLife board (rows, cols, generation);
 
-    ThreadManager manager (game, numThreads);
+    if (board.initialize ()) {
+        std::cerr << "无法打开文件 " << std::endl;
+        return 1;
+    }
+    // std::cout << "Initial Generation: " << std::endl;
+    // game.printGrid ();
+
+    ThreadManager manager (board, numThreads);
     manager.run (100);  // 运行100代
 
     std::cout << "Final Generation: " << std::endl;
-    game.printGrid ();
+    board.printGrid ();
 
     return 0;
 }

@@ -33,33 +33,6 @@ void saveBoardToFile (const std::vector<std::vector<int>> &board) {
     outputFile.close ();  // 关闭文件
 }
 
-bool loadBoardFromFile (const std::string &filename,
-                        std::vector<std::vector<int>> &board, int &rows,
-                        int &cols, int &generation) {
-    std::ifstream inputFile (filename);
-    std::string line, data;
-    while (getline (inputFile, line)) {
-        // std::cout << line << std::endl;
-        data += line;
-    }
-    // 读取行数、列数和代数
-    // 调整 board 的大小并填充数据
-    board.resize (rows, std::vector<int> (cols));
-    int index = 0;
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            if (index < data.size () &&
-                (data[index] == '0' || data[index] == '1')) {
-                board[i][j] =
-                    data[index] - '0';  // 将字符 '0' 或 '1' 转换为整数
-                index++;
-            }
-        }
-    }
-    inputFile.close ();
-    return true;
-}
-
 bool compareBoards (const std::vector<std::vector<int>> &board1,
                     const std::vector<std::vector<int>> &board2) {
     saveBoardToFile (board1);
