@@ -1,7 +1,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <vector>
 // 读取文件内容到board中
 

@@ -5,11 +5,11 @@
 #include "my_thread.h"
 
 int main () {
-    int rows, cols, generation;
+    int rows, cols, generations;
     int numThreads = std::thread::hardware_concurrency ();
     std::cout << "输入行数、列数、迭代数：";
-    std::cin >> rows >> cols >> generation;
-    GameOfLife board (rows, cols, generation);
+    std::cin >> rows >> cols >> generations;
+    GameOfLife board (rows, cols, generations);
 
     if (board.initialize ()) {
         std::cerr << "无法打开文件 " << std::endl;
@@ -19,7 +19,7 @@ int main () {
     // game.printGrid ();
 
     ThreadManager manager (board, numThreads);
-    manager.run (100);  // 运行100代
+    manager.run (generations);  // 运行100代
 
     // 进行数据对比验证正确性
 

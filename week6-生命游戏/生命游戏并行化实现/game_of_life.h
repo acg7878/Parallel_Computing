@@ -18,7 +18,7 @@ public:
 private:
     int rows;
     int cols;
-    int generation;
+    int generations;
     std::vector<std::vector<int>> grid;     // 当前网格
     std::vector<std::vector<int>> newGrid;  // 下一代网格
 };

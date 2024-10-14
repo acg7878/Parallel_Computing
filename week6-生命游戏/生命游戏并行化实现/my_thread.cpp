@@ -1,26 +1,15 @@
 #include "my_thread.h"
 
-#include <barrier> // C++20 标准中的屏障机制
+// #include <barrier> // C++20 标准中的屏障机制
 
 // 构造函数：初始化线程数和屏障
-ThreadManager::ThreadManager(GameOfLife& g, int nThreads)
-    : board(g)
-    , numThreads(nThreads)
-    , syncPoint(nThreads, [this]() { board.swapGrids(); }) // 屏障的回调函数负责交换网格
-{}
+ThreadManager::ThreadManager(GameOfLife& g, int nThreads) : board(g), numThreads(nThreads) {}
 
 // 线程的工作函数，负责更新从 startRow 到 endRow 的网格部分
 void ThreadManager::worker(int startRow, int endRow, int threadId, int generations) {
     for (int i = 0; i < generations; i++) {
         // 更新指定范围内的网格状态
         board.updateCellState(startRow, endRow);
-
-        // 等待所有线程完成当前代的网格更新
-        syncPoint.arrive_and_wait(); // 等待所有线程到达屏障
-
-        // 网格交换由屏障的回调函数完成，只执行一次
-        // 再次等待网格交换完成后，进入下一代
-        syncPoint.arrive_and_wait();
     }
 }
 

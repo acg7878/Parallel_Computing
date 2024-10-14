@@ -1,13 +1,12 @@
 #include "game_of_life.h"
 
 #include <iostream>
-
 #include "util.h"
 
 GameOfLife::GameOfLife (int r, int c, int n)
     : rows (r),
       cols (c),
-      generation (n),
+      generations (n),
       grid (r, std::vector<int> (c, 0)),
       newGrid (r, std::vector<int> (c, 0)) {}
 
@@ -20,10 +19,10 @@ bool GameOfLife::initialize () {
     // 选择数据、输入数据
     std::string initFilename =
         "test_data/" + std::to_string (fileIndex) + ".init.txt";
-    if (!loadBoardFromFile (initFilename, grid, rows, cols)) {
-        // std::cerr << "无法打开文件 " << std::endl;
+    if(loadBoardFromFile(initFilename, grid, rows, cols)){
         return 1;
     }
+    
     return 0;
 }
 
