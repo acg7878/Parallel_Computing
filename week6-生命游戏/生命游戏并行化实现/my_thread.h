@@ -8,17 +8,16 @@
 
 class ThreadManager {
 public:
-    ThreadManager (GameOfLife& game, int numThreads);
+    ThreadManager(GameOfLife& game, int numThreads);
 
-    void run (int generations);  // 运行多个代数
+    void run(int generations); // 运行多个代数
 
 private:
-    void worker (int startRow, int endRow, int threadId);  // 线程工作函数
+    void worker(int startRow, int endRow, int threadId, int generations); // 线程工作函数
 
-    GameOfLife& game;
+    GameOfLife& board;
     int numThreads;
-    std::barrier<> syncBarrier;        // 用于线程同步
-    std::vector<std::thread> threads;  // 存储线程
+    std::vector<std::thread> threads; // 存储线程
 };
 
-#endif  // THREAD_H
+#endif // THREAD_H

@@ -21,8 +21,7 @@ int main () {
     ThreadManager manager (board, numThreads);
     manager.run (100);  // 运行100代
 
-    std::cout << "Final Generation: " << std::endl;
-    board.printGrid ();
+    // 进行数据对比验证正确性
 
     return 0;
 }
