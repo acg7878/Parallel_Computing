@@ -19,7 +19,7 @@ bool GameOfLife::initialize () {
     // 选择数据、输入数据
     std::string initFilename =
         "test_data/" + std::to_string (fileIndex) + ".init.txt";
-    if(loadBoardFromFile(initFilename, grid, rows, cols)){
+    if(!loadBoardFromFile(initFilename, grid, rows, cols)){
         return 1;
     }
     

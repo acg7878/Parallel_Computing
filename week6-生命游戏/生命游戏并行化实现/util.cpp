@@ -15,6 +15,37 @@ void setCurrentPathToProjectRoot () {
     std::filesystem::current_path (
         projectRootPath);  // 将工作目录改为项目根目录
 }
+
+bool loadBoardFromFile(const std::string &filename, std::vector<std::vector<int>> &board, int &rows, int &cols) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "无法打开文件: " << filename << std::endl;
+        return false;
+    }
+
+    // 读取行数和列数
+    rows = 0;
+    cols = 0;
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::vector<int> row;
+        for (char cell : line) {
+            if (cell == '0' || cell == '1') { // 仅处理0和1
+                row.push_back(cell - '0'); // 将字符转换为整型
+            }
+        }
+        if (cols == 0) {
+            cols = row.size(); // 第一个读取的行作为列数
+        }
+        board.push_back(row);
+        rows++;
+    }
+
+    file.close(); // 关闭文件
+    return true;
+}
+
 void saveBoardToFile (const std::vector<std::vector<int>> &board) {
     std::ofstream outputFile ("output.txt");  // 以覆盖模式打开文件
 
