@@ -6,3 +6,5 @@ build
 .idea
 output.txt
 .cache
+[1-6].init.txt
+[1-6].end.txt

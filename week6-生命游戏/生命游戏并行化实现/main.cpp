@@ -19,7 +19,11 @@ int main() {
     for (int gen = 0; gen < generation; ++gen) {
         // 使用线程管理器更新网格
         threadManager.run();
-        if ((gen + 1) % (generation / 10) == 0 || gen == generation - 1) {
+        if (generation <= 9) {
+            std::cout << "已完成 " << gen + 1 << " 代，共 " << generation
+                      << " 代。" << std::endl;
+        } else if ((gen + 1) % (generation / 10) == 0 ||
+                   gen == generation - 1) {
             std::cout << "已完成 " << gen + 1 << " 代，共 " << generation
                       << " 代。" << std::endl;
         }
