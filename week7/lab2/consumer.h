@@ -1,10 +1,11 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
-#include <queue>
+
+#include "buffer.h"
 
 class Consumer {
 public:
-    bool isPrimeNumber(std::queue<int> numBuffer);
+    bool isPrimeNumber(Buffer& buffer);
 
 private:
 };

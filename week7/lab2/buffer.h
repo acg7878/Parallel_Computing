@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <queue>
+
 class Buffer {
 public:
     void push(int num);
