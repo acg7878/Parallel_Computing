@@ -5,7 +5,7 @@
 
 class Producer {
 public:
-    void random_product(Buffer& buffer);
+    void random_product(Buffer& buffer, int numProducers, int thread_id);
 
 private:
 };
