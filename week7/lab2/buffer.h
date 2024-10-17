@@ -11,6 +11,8 @@ public:
     int pop();
     bool empty() const;
     void setFinished();
+    bool getFinished();
+
 private:
     mutable std::mutex mtx;
     std::queue<int> numBuffer;

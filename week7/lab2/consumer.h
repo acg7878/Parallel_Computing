@@ -5,8 +5,7 @@
 
 class Consumer {
 public:
-    bool isPrimeNumber(Buffer& buffer);
-    void task();
+    void isPrimeNumber(Buffer& buffer); // 执行判断素数逻辑，但是不返回布尔值
 
 private:
 };

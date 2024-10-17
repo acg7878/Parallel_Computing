@@ -20,9 +20,9 @@ void ThreadManager::run(int numProducers, int numConsumers, int numToGenerate) {
     auto start = std::chrono::high_resolution_clock::now();
 
     // 启动生产者线程
-    for (int i = 0; i < numProducers; ++i) {
+    for (int thread_id = 0; thread_id < numProducers; thread_id++) {
         producers.emplace_back(&Producer::random_product, &producer,
-                               std::ref(buffer));
+                               std::ref(buffer), numProducers, thread_id);
     }
     // 启动消费者线程
     for (int i = 0; i < numConsumers; ++i) {
