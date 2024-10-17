@@ -10,8 +10,6 @@ IndentWidth: 4
 MaxEmptyLinesToKeep: 1
 # 圆括号的换行方式
 BreakBeforeBraces: Attach
-# 是否允许短方法单行
-AllowShortFunctionsOnASingleLine: true
 # 支持一行的if
 AllowShortIfStatementsOnASingleLine: true
 # 在未封闭(括号的开始和结束不在同一行)的括号中的代码是否对齐
@@ -23,7 +21,7 @@ ObjCBlockIndentWidth: 4
 # 针对OC，属性名后加空格
 ObjCSpaceAfterProperty: true
 # 每行字符的长度
-ColumnLimit: 120
+ColumnLimit: 80
 # 注释对齐
 AlignTrailingComments: true
 # 括号后加空格
@@ -48,3 +46,8 @@ TabWidth: 4
 SpaceBeforeAssignmentOperators: true
 # 行尾的注释前加1个空格
 SpacesBeforeTrailingComments: 1
+# 决定构造函数初始化列表是全部放在一行，还是每个成员各占一行
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+# 强制每个函数都在新的一行
+AllowShortFunctionsOnASingleLine: None 
+

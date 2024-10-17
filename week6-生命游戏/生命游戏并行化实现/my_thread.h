@@ -1,6 +1,5 @@
 #ifndef MYTHREAD_H
 #define MYTHREAD_H
-//#include <barrier>
 #include <thread>
 #include <vector>
 
@@ -8,16 +7,14 @@
 
 class ThreadManager {
 public:
-    ThreadManager(GameOfLife& game, int numThreads);
-
-    void run(int generations); // 运行多个代数
+    ThreadManager(GameOfLife& board, int numThreads);
+    void run();
+    void threadTask(GameOfLife& board, int startRow, int endRow);
 
 private:
-    void worker(int startRow, int endRow, int threadId, int generations); // 线程工作函数
-
-    GameOfLife& board;
     int numThreads;
-    std::vector<std::thread> threads; // 存储线程
+    GameOfLife& board;
+    std::vector<std::thread> threads;
 };
 
 #endif // THREAD_H
