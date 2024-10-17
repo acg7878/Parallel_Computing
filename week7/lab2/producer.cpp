@@ -1,5 +1,6 @@
 #include "producer.h"
 
+#include <iostream>
 #include <limits>
 #include <random>
 
@@ -15,4 +16,6 @@ void Producer::random_product(Buffer& buffer) {
         int random_number = dist(gen);
         buffer.push(random_number);
     }
+    std::cout << "生产完毕" << std::endl;
+    buffer.setFinished();
 }

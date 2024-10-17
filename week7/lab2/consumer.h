@@ -6,6 +6,7 @@
 class Consumer {
 public:
     bool isPrimeNumber(Buffer& buffer);
+    void task();
 
 private:
 };

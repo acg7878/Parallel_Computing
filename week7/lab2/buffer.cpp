@@ -1,8 +1,11 @@
 #include "buffer.h"
 
+#include <mutex>
+
 void Buffer::push(int num) {
     std::lock_guard<std::mutex> lock(mtx);
     numBuffer.push(num);
+    cv.notify_all();
 }
 
 bool Buffer::empty() const {
@@ -11,11 +14,16 @@ bool Buffer::empty() const {
 }
 
 int Buffer::pop() {
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, [this] { return !numBuffer.empty() || finished; });
+    if (numBuffer.empty() && finished) return -1;
+    int num = numBuffer.front();
+    numBuffer.pop();
+    return num;
+}
+
+void Buffer::setFinished() {
     std::lock_guard<std::mutex> lock(mtx);
-    if (!numBuffer.empty()) {
-        int num = numBuffer.front();
-        numBuffer.pop();
-        return num;
-    }
-    return -1; // 队列为空时返回 -1
+    finished = true;
+    cv.notify_all();
 }
