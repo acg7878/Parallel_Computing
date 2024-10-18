@@ -16,7 +16,7 @@ bool Buffer::empty() const {
 int Buffer::pop() {
     std::unique_lock<std::mutex> lock(mtx);
     cv.wait(lock, [this] { return !numBuffer.empty(); });
-    // ↑等待直到有生产
+    // ↑等待,直到有生产
     if (numBuffer.empty() && finished) return -1;
     int num = numBuffer.front();
     numBuffer.pop();
