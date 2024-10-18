@@ -5,7 +5,7 @@
 void Buffer::push(int num) {
     std::lock_guard<std::mutex> lock(mtx);
     numBuffer.push(num);
-    cv.notify_one();
+    cv.notify_all();
 }
 
 bool Buffer::empty() const {
