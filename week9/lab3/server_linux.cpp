@@ -4,7 +4,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
-
+#include <thread>
 const std::string correct_id = "202226910925"; // 替换为你自己的学号
 
 Server::Server(int port) : port(port) {}
@@ -42,7 +42,7 @@ void Server::start() {
     close(server_socket);
 }
 
-void Server::handle_client(int client_socket) {
+void Server::handle_client(socket_t client_socket) {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
 

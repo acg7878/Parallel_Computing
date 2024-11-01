@@ -2,8 +2,6 @@
 #define SERVER_H
 
 #include <string>
-#include <thread>
-#include <iostream>
 
 #ifdef _WIN32  // Windows
     #include <winsock2.h>
