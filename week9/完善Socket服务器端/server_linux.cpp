@@ -1,14 +1,12 @@
 #include "server.h"
 #include "util.h"
 #include <cstring>
-#include <ctime>
 #include <iostream>
-#include <string>
-#include <thread>
-#include <unistd.h>
 const std::string correct_id = "202226910925";
 const std::string correct_name = "杨俊科";
-Server::Server(int port) : port(port) {}
+
+// 构造函数，初始化端口和线程池
+Server::Server(int port) : port(port), thread_pool(4) {}
 
 void Server::start() {
   int server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -33,12 +31,14 @@ void Server::start() {
   std::cout << "Server listening on port " << port << std::endl;
 
   while (true) {
-    int client_socket = accept(server_socket, nullptr, nullptr);
+    socket_t client_socket = accept(server_socket, nullptr, nullptr);
     if (client_socket < 0) {
       std::cerr << "Accept failed!" << std::endl;
       continue;
     }
-    std::thread(&Server::handle_client, this, client_socket).detach();
+
+    // 使用线程池提交任务
+    thread_pool.submit([this, client_socket] { handle_client(client_socket); });
   }
 
   close(server_socket);
@@ -65,14 +65,11 @@ void Server::handle_client(socket_t client_socket) {
 std::string Server::process_request(const std::string &request) {
   if (request == "gettime") {
     return get_current_time();
-
   } else if (request.rfind("test ", 0) == 0) {
     return request.substr(5);
-
   } else if (request.rfind("auth ", 0) == 0) {
     std::string student_id = request.substr(5);
     return (student_id == correct_id) ? "ok" : "error";
-
   } else if (request.rfind("auth2 ", 0) == 0) {
     std::string credentials = request.substr(6);
     size_t comma_pos = credentials.find(',');
@@ -86,4 +83,8 @@ std::string Server::process_request(const std::string &request) {
     }
   }
   return "unknown command";
+}
+
+Server::~Server() {
+  thread_pool.shutdown(); // 等待所有任务完成后关闭线程池
 }

@@ -8,8 +8,10 @@
 #include <ctime>
 
 const std::string correct_id = "202226910925"; // 替换为你自己的学号
+const std::string correct_name = "你的姓名"; // 替换为你的姓名
 
-Server::Server(int port) : port(port) {}
+// Server 构造函数，初始化端口和线程池
+Server::Server(int port) : port(port), thread_pool(4) {} // 使用线程池，最多4个线程
 
 void Server::start() {
     WSADATA wsaData;
@@ -52,7 +54,11 @@ void Server::start() {
             std::cerr << "Accept failed!" << std::endl;
             continue;
         }
-        std::thread(&Server::handle_client, this, client_socket).detach();
+
+        // 使用线程池提交处理客户端请求的任务
+        thread_pool.submit([this, client_socket] {
+            handle_client(client_socket);
+        });
     }
 
     closesocket(server_socket);
@@ -78,28 +84,31 @@ void Server::handle_client(SOCKET client_socket) {
 }
 
 std::string Server::process_request(const std::string &request) {
-  if (request == "gettime") {
-    return get_current_time();
+    if (request == "gettime") {
+        return get_current_time();
 
-  } else if (request.rfind("test ", 0) == 0) {
-    return request.substr(5);
+    } else if (request.rfind("test ", 0) == 0) {
+        return request.substr(5);
 
-  } else if (request.rfind("auth ", 0) == 0) {
-    std::string student_id = request.substr(5);
-    return (student_id == correct_id) ? "ok" : "error";
+    } else if (request.rfind("auth ", 0) == 0) {
+        std::string student_id = request.substr(5);
+        return (student_id == correct_id) ? "ok" : "error";
 
-  } else if (request.rfind("auth2 ", 0) == 0) {
-    std::string credentials = request.substr(6);
-    size_t comma_pos = credentials.find(',');
-    if (comma_pos != std::string::npos) {
-      std::string student_id = credentials.substr(0, comma_pos);
-      std::string name = credentials.substr(comma_pos + 1);
-      return (student_id == correct_id && name == correct_name) ? "ok"
-                                                                : "error";
-    } else {
-      return "error";
+    } else if (request.rfind("auth2 ", 0) == 0) {
+        std::string credentials = request.substr(6);
+        size_t comma_pos = credentials.find(',');
+        if (comma_pos != std::string::npos) {
+            std::string student_id = credentials.substr(0, comma_pos);
+            std::string name = credentials.substr(comma_pos + 1);
+            return (student_id == correct_id && name == correct_name) ? "ok" : "error";
+        } else {
+            return "error";
+        }
     }
-  }
-  return "unknown command";
+    return "unknown command";
 }
 
+// Server 析构函数，关闭线程池
+Server::~Server() {
+    thread_pool.shutdown(); // 等待所有任务完成后关闭线程池
+}

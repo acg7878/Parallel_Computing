@@ -2,7 +2,7 @@
 #define SERVER_H
 
 #include <string>
-
+#include "thread_pool.h" // 确保这里包含的是正确的线程池头文件
 #ifdef _WIN32  // Windows
     #include <winsock2.h>
     #include <ws2tcpip.h>
@@ -19,11 +19,13 @@ class Server {
 public:
     Server(int port);
     void start();
+    ~Server();
 
 private:
     int port;
     void handle_client(socket_t client_socket);
     std::string process_request(const std::string& request);
+    thread_utils::thread_pool thread_pool; // 线程池成员变量，使用默认构造函数
 };
 
 #endif // SERVER_H

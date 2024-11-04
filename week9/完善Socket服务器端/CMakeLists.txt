@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(SocketServer)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 
 # 根据操作系统选择对应的服务器文件
 if(WIN32)
@@ -15,7 +15,7 @@ else()
 endif()
 
 # 添加可执行文件
-add_executable(SocketServer main.cpp ${SERVER_SRC} util.cpp)
+add_executable(SocketServer main.cpp ${SERVER_SRC} util.cpp thread_pool.cpp worker_thread.cpp)
 
 # 链接库
 target_link_libraries(SocketServer ${LIBRARIES})
