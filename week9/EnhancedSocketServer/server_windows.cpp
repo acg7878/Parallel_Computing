@@ -33,6 +33,7 @@ void Server::start() {
   server_addr.sin_addr.s_addr = INADDR_ANY;
   server_addr.sin_port = htons(port);
 
+  // 端口复用，防止TIME_WAIT状态
   int opt = 1;
   if (setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
                  sizeof(opt)) == SOCKET_ERROR) {
