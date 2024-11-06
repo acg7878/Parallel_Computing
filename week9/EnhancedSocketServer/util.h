@@ -3,6 +3,7 @@
 
 #include <string>
 
-std::string get_current_time();
+std::wstring get_current_time();
+
 
 #endif // UTIL_H
