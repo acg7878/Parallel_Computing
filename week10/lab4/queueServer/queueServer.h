@@ -17,6 +17,7 @@ public:
   queueServer(const queueServer &) = delete;
   queueServer &operator=(const queueServer &) = delete;
 
+  void start();
 
 private:
   int port;
@@ -26,8 +27,8 @@ private:
   void start_server();
   int pop();
   void push(int item);
-  void accept_connections();
-  void handle_client();
+  void handle_consumer(int client_socket);
+  void handle_producer(int client_socket);
 };
 
 #endif // QUEUESERVER_H
