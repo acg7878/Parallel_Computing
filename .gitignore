@@ -8,3 +8,4 @@ output.txt
 .cache
 [1-6].init.txt
 [1-6].end.txt
+.DS_Store
