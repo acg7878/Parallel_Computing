@@ -8,7 +8,8 @@ read recompile_choice
 check_and_compile() {
     for dir in consumerClient producerClient queueServer; do
         # 获取每个子目录的可执行文件名
-        exec_file="${dir}/${dir}"
+        mkdir ${dir}/build
+        exec_file="${dir}/build/${dir}"
 
         # 如果选择重新编译，或没有可执行文件，则进行编译
         if [ "$recompile_choice" = "y" ] || [ ! -f "$exec_file" ]; then
@@ -28,7 +29,7 @@ check_and_compile() {
 # 启动队列服务器
 start_queue_server() {
     echo "Starting queue server..."
-    ./queueServer/queueServer &
+    ./queueServer/build/squeueServer &
     # 给服务器一些时间启动
     sleep 1
 }
@@ -38,7 +39,7 @@ start_producer() {
     local num_producers=$1
     echo "Starting $num_producers producers..."
     for ((i=0; i<num_producers; i++)); do
-        ./producerClient/producerClient &
+        ./producerClient/build/producerClient &
     done
 }
 
@@ -47,7 +48,7 @@ start_consumer() {
     local num_consumers=$1
     echo "Starting $num_consumers consumers..."
     for ((i=0; i<num_consumers; i++)); do
-        ./consumerClient/consumerClient &
+        ./consumerClient/build/consumerClient &
     done
 }
 
