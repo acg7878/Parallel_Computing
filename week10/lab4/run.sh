@@ -29,7 +29,7 @@ check_and_compile() {
 # 启动队列服务器
 start_queue_server() {
     echo "Starting queue server..."
-    ./queueServer/build/squeueServer &
+    ./queueServer/build/queueServer &
     # 给服务器一些时间启动
     sleep 1
 }
