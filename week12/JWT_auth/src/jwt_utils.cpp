@@ -10,75 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <vector>
 
-// JWT 生成函数
-std::string generateJWT(const std::string &username, const std::string &secret) {
-    nlohmann::json header = {{"alg", "HS256"}, {"typ", "JWT"}};
-    nlohmann::json payload = {
-        {"nbf", std::to_string(std::time(nullptr))},
-        {"exp", std::to_string(std::time(nullptr) + 3600)},
-        {"name", username}};
-
-    auto base64Encode = [](const std::string &input) -> std::string {
-        static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        std::string output;
-        int val = 0, valb = -6;
-        for (unsigned char c : input) {
-            val = (val << 8) + c;
-            valb += 8;
-            while (valb >= 0) {
-                output.push_back(table[(val >> valb) & 0x3F]);
-                valb -= 6;
-            }
-        }
-        while (output.size() % 4) output.push_back('=');
-        return output;
-    };
-
-    std::string encodedHeader = base64Encode(header.dump());
-    std::string encodedPayload = base64Encode(payload.dump());
-    std::string data = encodedHeader + "." + encodedPayload;
-
-    unsigned char hash[EVP_MAX_MD_SIZE];
-    unsigned int hashLen;
-    HMAC(EVP_sha256(), secret.c_str(), secret.length(),
-         reinterpret_cast<const unsigned char *>(data.c_str()), data.length(), hash, &hashLen);
-
-    std::string signature(hash, hash + hashLen);
-    std::string encodedSignature = base64Encode(signature);
-
-    return data + "." + encodedSignature;
-}
-
-
-// JWT 验证函数
-bool verifyJWT(const std::string &jwtToken, const std::string &secret) {
-    auto split = [](const std::string &s, char delimiter) -> std::vector<std::string> {
-        std::vector<std::string> tokens;
-        std::stringstream ss(s);
-        std::string token;
-        while (std::getline(ss, token, delimiter)) tokens.push_back(token);
-        return tokens;
-    };
-
-    auto parts = split(jwtToken, '.');
-    if (parts.size() != 3) {
-        std::cerr << "Invalid JWT format." << std::endl;
-        return false;
-    }
-
-    std::string data = parts[0] + "." + parts[1];
-
-    unsigned char hash[EVP_MAX_MD_SIZE];
-    unsigned int hashLen;
-    HMAC(EVP_sha256(), secret.c_str(), secret.length(),
-         reinterpret_cast<const unsigned char *>(data.c_str()), data.length(), hash, &hashLen);
-
-    std::string computedSignature(hash, hash + hashLen);
-
-    return computedSignature == parts[2];
-}
 
 // MD5 工具函数
 std::string computeMD5(const std::string &input) {
