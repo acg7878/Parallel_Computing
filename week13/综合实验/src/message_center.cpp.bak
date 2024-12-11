@@ -1,0 +1,115 @@
+#include "common.hpp"
+#include <boost/asio.hpp>
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <set>
+#include <thread>
+
+// 消息队列
+std::queue<Message> message_queue;
+std::mutex queue_mutex;
+std::condition_variable queue_cv;
+
+// 注册的消费者列表
+std::set<tcp::socket *> consumers;
+std::mutex consumers_mutex;
+
+// 处理生产者的消息
+void handle_producer(tcp::socket &producer_socket) {
+  char buffer[BUFFER_SIZE];
+  while (true) {
+    boost::system::error_code ec;
+    size_t length = producer_socket.read_some(boost::asio::buffer(buffer), ec);
+
+    if (ec == boost::asio::error::eof)
+      break;
+    if (ec)
+      throw boost::system::system_error(ec);
+
+    std::string message_data(buffer, length);
+    Message msg = Message::deserialize(message_data);
+
+    // 将消息存入队列
+    {
+      std::lock_guard<std::mutex> lock(queue_mutex);
+      message_queue.push(msg);
+    }
+    queue_cv.notify_all();
+  }
+}
+
+// 广播消息给所有消费者
+void broadcast_message(const Message &msg) {
+  std::lock_guard<std::mutex> lock(consumers_mutex);
+  for (tcp::socket *consumer_socket : consumers) {
+    boost::asio::write(*consumer_socket, boost::asio::buffer(msg.serialize()));
+  }
+}
+
+// 处理消费者注册和消息广播
+void handle_consumer(tcp::acceptor &consumer_acceptor) {
+  while (true) {
+    // 接受新的消费者连接
+    tcp::socket *consumer_socket =
+        new tcp::socket(consumer_acceptor.get_executor());
+    consumer_acceptor.accept(*consumer_socket);
+
+    {
+      std::lock_guard<std::mutex> lock(consumers_mutex);
+      consumers.insert(consumer_socket);
+    }
+
+    std::cout << "Consumer registered." << std::endl;
+  }
+}
+
+// 处理队列消息并广播
+void process_messages() {
+  while (true) {
+    std::unique_lock<std::mutex> lock(queue_mutex);
+    queue_cv.wait(lock, [] { return !message_queue.empty(); });
+
+    Message msg = message_queue.front();
+    message_queue.pop();
+    lock.unlock();
+
+    // 广播消息给所有消费者
+    broadcast_message(msg);
+  }
+}
+
+int main() {
+  try {
+    boost::asio::io_context io_context;
+
+    // 设置生产者和消费者端口
+    tcp::acceptor producer_acceptor(io_context,
+                                    tcp::endpoint(tcp::v4(), PRODUCER_PORT));
+    tcp::acceptor consumer_acceptor(io_context,
+                                    tcp::endpoint(tcp::v4(), CONSUMER_PORT));
+
+    // 等待生产者连接
+    tcp::socket producer_socket(io_context);
+    producer_acceptor.accept(producer_socket);
+
+    // 启动线程处理生产者消息
+    std::thread producer_thread(handle_producer, std::ref(producer_socket));
+
+    // 启动线程处理消费者注册
+    std::thread consumer_thread(handle_consumer, std::ref(consumer_acceptor));
+
+    // 启动线程处理消息广播
+    std::thread processing_thread(process_messages);
+
+    // 等待线程完成
+    producer_thread.join();
+    consumer_thread.detach(); // 消费者线程可以在后台运行
+    processing_thread.join();
+  } catch (const std::exception &e) {
+    std::cerr << "Exception: " << e.what() << std::endl;
+  }
+
+  return 0;
+}
